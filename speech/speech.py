@@ -67,29 +67,62 @@ ts_features, ts_labels = pd.read_csv('ts_features.csv').values, pd.read_csv('ts_
 #tr_labels = one_hot_encode(tr_labels)
 #ts_labels = one_hot_encode(ts_labels)
 
-training_epochs = 50
-n_dim = tr_features.shape[1]
-n_classes = 10
-n_hidden_units_one = 280 
-n_hidden_units_two = 300
-sd = 1 / np.sqrt(n_dim)
-learning_rate = 0.01
 
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.svm import SVC, SVR
 from sklearn.naive_bayes import GaussianNB
 from sklearn.ensemble import RandomForestClassifier, VotingClassifier, AdaBoostClassifier, ExtraTreesClassifier
 from sklearn.linear_model import LogisticRegression, LogisticRegressionCV, Ridge, Lasso
-
-model     = Lasso()
-#model     = SVC()
-#print tr_features
-model.fit(tr_features, tr_labels)
-pred = model.predict(ts_features)
-print accuracy_score(pred,ts_labels)
+try:
+    model     = GaussianNB()
+    model.fit(tr_features, tr_labels)
+    pred = model.predict(ts_features)
+    print 'nb: '+str(accuracy_score(pred,ts_labels))
+except:
+    print 'failed'
+try:
+    model     = RandomForestClassifier()
+    model.fit(tr_features, tr_labels)
+    pred = model.predict(ts_features)
+    print 'rf: '+str(accuracy_score(pred,ts_labels))
+except:
+    print 'failed'
+try:
+    model     = ExtraTreesClassifier()
+    model.fit(tr_features, tr_labels)
+    pred = model.predict(ts_features)
+    print 'erf:'+str(accuracy_score(pred,ts_labels))
+except:
+    print 'failed'
+try:
+    model     = LogisticRegression()
+    model.fit(tr_features, tr_labels)
+    pred = model.predict(ts_features)
+    print 'lr: '+str(accuracy_score(pred,ts_labels))
+except:
+    print 'failed'
+try:
+    model     = LogisticRegressionCV()
+    model.fit(tr_features, tr_labels)
+    pred = model.predict(ts_features)
+    print 'lrcv'+str(accuracy_score(pred,ts_labels))
+except:
+    print 'failed'
+try:
+    model     = SVC()
+    model.fit(tr_features, tr_labels)
+    pred = model.predict(ts_features)
+    print 'svc:'+str(accuracy_score(pred,ts_labels))
+except:
+    print 'failed'
+try:
+    model     = KNeighborsClassifier()
+    model.fit(tr_features, tr_labels)
+    pred = model.predict(ts_features)
+    print 'knn:'+str(accuracy_score(pred,ts_labels))
+except:
+    print 'failed'
 exit()
-
-
 
 X = tf.placeholder(tf.float32,[None,n_dim])
 Y = tf.placeholder(tf.float32,[None,n_classes])

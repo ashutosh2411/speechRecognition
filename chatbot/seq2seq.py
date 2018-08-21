@@ -57,11 +57,11 @@ import string
 import random
 
 batch_size = 64  # Batch size for training.
-epochs = 25  # Number of epochs to train for.
-latent_dim = 100  # Latent dimensionality of the encoding space.
-num_samples = 2000  # Number of samples to train on.
+epochs = 20  # Number of epochs to train for.
+latent_dim = 256  # Latent dimensionality of the encoding space.
+num_samples = 500  # Number of samples to train on.
 # Path to the data txt file on disk.
-data_path = 'fra-eng/fra.txt'
+data_path = 'data.txt'
 
 # Vectorize the data.
 input_texts = []
@@ -90,7 +90,7 @@ for line in lines[: min(num_samples, len(lines) - 1)]:
 	# for the targets, and "\n" as "end sequence" character.
 	target_text = '\t' + target_text + '\n'
 	input_texts.append(input_text[:-1].lower())
-	target_texts.append(target_text[:-1].lower())
+	target_texts.append(target_text.lower())
 tg_all = ''
 ip_all = ''
 for i in input_texts:
@@ -102,7 +102,7 @@ input_characters = set (ip_all.split())
 target_characters = set (tg_all.split())
 
 input_characters = sorted(list(input_characters))
-target_characters = sorted(list(target_characters))
+target_characters = sorted(list(list(target_characters)+['\t']))
 num_encoder_tokens = len(input_characters)
 num_decoder_tokens = len(target_characters)
 max_encoder_seq_length = max([len(txt) for txt in input_texts])
@@ -118,7 +118,6 @@ input_token_index = dict(
 	[(char, i) for i, char in enumerate(input_characters)])
 target_token_index = dict(
 	[(char, i) for i, char in enumerate(target_characters)])
-
 encoder_input_data = np.zeros(
 	(len(input_texts), max_encoder_seq_length, num_encoder_tokens),
 	dtype='float32')
@@ -221,8 +220,7 @@ def decode_sequence(input_seq):
 		# Sample a token
 		sampled_token_index = np.argmax(output_tokens[0, -1, :])
 		sampled_char = reverse_target_char_index[sampled_token_index]
-		decoded_sentence += sampled_char
-
+		decoded_sentence =  decoded_sentence +sampled_char + ' '
 		# Exit condition: either hit max length
 		# or find stop character.
 		if (sampled_char == '\n' or
@@ -239,7 +237,7 @@ def decode_sequence(input_seq):
 	return decoded_sentence
 
 
-for seq_index in range(100):
+for seq_index in range(10):
 	# Take one sequence (part of the training set)
 	# for trying out decoding.
 	input_seq = encoder_input_data[seq_index: seq_index + 1]
