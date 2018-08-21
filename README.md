@@ -1,4 +1,5 @@
 # Speech Recognition
+Implementation details could be found [here](/finalreport.pdf)
 ## Introduction
 Speech recognition is invading our lives. It's built into our phones, our game consoles and our smart watches. It's even automating our homes. 
 ## Our Proposal
